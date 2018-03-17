@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ .Values.serviceName }}"
+  labels:
+    app: "{{ .Values.serviceName }}"
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.serviceName }}"
+    spec:
+      imagePullSecrets:
+      - name: acrsecret
+
+      volumes:
+      - name: appsettingsfile
+        secret:
+         secretName: "{{ .Values.appsettings.secret }}"
+
+      containers:
+      - name: "{{ .Values.containers.name }}"
+        image: "{{ .Values.containers.image }}"
+        volumeMounts:
+        - name: appsettingsfile
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+        env:
+        - name: "Abc__Absg__Messaging__ConnectionString"
+          value: "{{ .Values.appsettings.messagingConnection }}"
+        - name: "Abc__Absg__Messaging__SecondaryConnectionString"
+          value: "{{ .Values.appsettings.messagingConnectionSecondary }}"
+        - name: "Abc__Absg__ApplicationInsights__InstrumentationKey"
+          value: "{{ .Values.appsettings.instrumentationKey }}"
+        - name: "Abc__Absg__Jwt__MetadataAddress"
+          value: "{{ .Values.appsettings.jwtMetadataAddress }}"
+        - name: "Abc__Absg__Authentication__IdentityApi"
+          value: "{{ .Values.appsettings.identityEndpoint }}"
+        - name: "Abc__Absg__Authentication__ApimSubscriptionKey"
+          value: "{{ .Values.appsettings.apimSubscriptionKey }}"
+        - name: "Abc__Absg__Authorization__EntitlementsApi"
+          value: "{{ .Values.appsettings.entitlementsEndpoint }}"
+        - name: "Abc__Absg__Authorization__ApimSubscriptionKey"
+          value: "{{ .Values.appsettings.apimSubscriptionKey }}"
+{{ if eq .Values.serviceName "identity" }}
+        - name: "Abc__Absg__Identity__TenantName"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  TenantName
+        - name: "Abc__Absg__Identity__TenantId"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  TenantId
+        - name: "Abc__Absg__Identity__ClientId"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  ClientId
+        - name: "Abc__Absg__Identity__ClientSecret"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  ClientSecret
+        - name: "Abc__Absg__Identity__TenantName"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  TenantName
+        - name: "Abc__Absg__Identity__GraphApiUrl"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  GraphApiUrl
+        - name: "Abc__Absg__Identity__AuthUrl"
+          valueFrom:
+            configMapKeyRef:
+              name: identity-secrets
+              key:  AuthUrl
+{{ end }}

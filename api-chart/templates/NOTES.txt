@@ -1,0 +1,3 @@
+Your application {{ .Values.serviceName }} has been deployed to {{ .Values.hostName }}.
+
+Enjoy!

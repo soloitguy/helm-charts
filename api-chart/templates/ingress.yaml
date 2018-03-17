@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/cors-allow-headers:  "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,abc-correlation-token,Ocp-Apim-Subscription-Key,PartyId"
+  name: "{{ .Values.serviceName }}"
+spec:
+  tls:
+  - hosts:
+    - "{{ .Values.hostName}}"
+    secretName: "{{ .Values.tls.secretName }}"
+
+  rules:
+  - host: "{{ .Values.hostName}}"
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: "{{ .Values.serviceName }}"
+          servicePort: 80

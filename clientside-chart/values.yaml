@@ -1,0 +1,16 @@
+namespace: default
+
+serviceName: nucleusportal
+
+containers:
+  name: nucleusportal
+  image: absgprod.azurecr.io/nucleusportal
+
+configName: nucleusportal
+
+environmentName: dev
+
+tls:
+  secretName: ni
+
+hostName: portal.dev.nucleusinventory.com

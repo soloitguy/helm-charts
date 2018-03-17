@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ .Values.serviceName }}"
+  labels:
+    app: "{{ .Values.serviceName }}"
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.serviceName }}"
+    spec:
+      imagePullSecrets:
+      - name: acrsecret
+
+      containers:
+      - name: "{{ .Values.containers.name }}"
+        image: "{{ .Values.containers.image }}"
+        env:
+        - name: DEPLOYMENT_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ .Values.configName }}"
+              key: deployment.Env
+        command:
+          ["/bin/bash","-c", "./injectEnv.sh -e $(DEPLOYMENT_ENVIRONMENT) && nginx -g 'daemon off;'"]

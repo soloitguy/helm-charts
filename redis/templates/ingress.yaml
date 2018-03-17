@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: redis
+spec:
+  tls:
+  - hosts:
+    - "{{ .Values.hostName}}"
+    secretName: hdp
+  rules:
+  - host: "{{ .Values.hostName}}"
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: redis-redis
+          servicePort: 6379

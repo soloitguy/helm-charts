@@ -1,0 +1,22 @@
+namespace: default
+
+serviceName: party
+
+appsettings:
+  secret: party-appsettings
+  messagingConnection: "NONE"
+  messagingConnectionSecondary: "NONE"
+  instrumentationKey: "NONE"
+  jwtMetadataAddress: "NONE"
+  entitlementsEndpoint: "NONE"
+  identityEndpoint: "NONE"
+  apimSubscriptionKey: "NONE"
+
+containers:
+  name: party
+  image: absgprod.azurecr.io/absg-party:16172
+
+tls:
+  secretName: hdp
+
+hostName: party.dev.hdp.amerisourcebergen.com
